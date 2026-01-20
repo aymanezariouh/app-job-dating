@@ -1,24 +1,20 @@
 <?php
 
 use App\core\Router;
+use App\controllers\back\AuthController;
 use App\controllers\front\HomeController;
+use App\controllers\back\DashboardController;
+
 $router = new Router();
 
-// Define your routes here
 $router->get('/', [HomeController::class, 'index']);
+$router->get('/about', function () { return "About page"; });
 
-$router->get('/about', function() {
-    return "About page";
-});
+$router->get('/login', [AuthController::class, 'login']);
+$router->post('/login', [AuthController::class, 'loginSubmit']);
+$router->get('/logout', [AuthController::class, 'logout']);
 
-$router->get('/user/{id}', function($params) {
-    return "User ID: " . $params['id'];
-});
-
-$router->get('/login', [HomeController::class, 'login']);
-$router->post('/login', [HomeController::class, 'loginSubmit']);
-
-$router->get('/register', [HomeController::class, 'register']);
-$router->post('/register', [HomeController::class, 'registerSubmit']);
+$router->get('/admin/dashboard', [DashboardController::class, 'index']);
+$router->get('/jobs', [HomeController::class, 'jobs']);
 
 return $router;
