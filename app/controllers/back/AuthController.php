@@ -7,31 +7,25 @@ use App\core\Security;
 
 class AuthController extends Controller
 {
-    private string $csrfKey = 'csrf_login';
-
     public function login()
     {
-        $token = Security::csrfToken($this->csrfKey);
+        $csrf = Security::csrfToken();
         $error = $_SESSION['flash_error'] ?? null;
         unset($_SESSION['flash_error']);
-echo $this->render('back/auth/login.twig', [
-    'csrf_token' => $token,
-    'error' => $error
-]);
-exit;
-        return $this->render('auth/login.twig', [
-            'csrf_token' => $token,
+
+        return $this->render('back/auth/login.twig', [
+            'csrf_token' => $csrf,
             'error' => $error
         ]);
     }
 
     public function loginSubmit()
     {
-        $email = trim($_POST['email'] ?? '');
+        $email = Security::sanitize($_POST['email'] ?? '');
         $password = (string)($_POST['password'] ?? '');
-        $csrf = (string)($_POST['csrf_token'] ?? '');
+        $token = (string)($_POST['csrf_token'] ?? '');
 
-        if (!Security::validateCsrf($csrf, $this->csrfKey)) {
+        if (!Security::verifyCsrfToken($token)) {
             http_response_code(419);
             echo "CSRF token invalid";
             exit;
@@ -43,7 +37,7 @@ exit;
             exit;
         }
 
-        if ($this->auth->attempt($email, $password)) {
+        if ($this->auth->login($email, $password)) {
             $this->clearAttempts($email);
 
             if ($this->auth->role() === 'admin') {
@@ -64,7 +58,6 @@ exit;
     public function logout()
     {
         $this->auth->logout();
-        Security::invalidateCsrf($this->csrfKey);
         header('Location: /login');
         exit;
     }

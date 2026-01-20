@@ -12,4 +12,4 @@ abstract class Controller
     public function render($template , $data = [] ) {
         return $this->view->render($template, $data);
     }
-}
+}   
