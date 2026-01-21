@@ -25,5 +25,14 @@ $router->post('/admin/announcements/update', [App\controllers\back\AnnouncementC
 
 $router->post('/admin/announcements/archive', [App\controllers\back\AnnouncementController::class, 'archive']);
 $router->post('/admin/announcements/restore', [App\controllers\back\AnnouncementController::class, 'restore']);
+$router->get('/admin/companies', [App\controllers\back\CompanyController::class, 'index']);
+$router->get('/admin/companies/create', [App\controllers\back\CompanyController::class, 'create']);
+$router->post('/admin/companies', [App\controllers\back\CompanyController::class, 'store']);
+
+$router->get('/admin/companies/edit', [App\controllers\back\CompanyController::class, 'edit']);
+$router->post('/admin/companies/update', [App\controllers\back\CompanyController::class, 'update']);
+
+$router->post('/admin/companies/delete', [App\controllers\back\CompanyController::class, 'delete']);
+$router->get('/admin/students', [App\controllers\back\StudentController::class, 'index']);
 
 return $router;

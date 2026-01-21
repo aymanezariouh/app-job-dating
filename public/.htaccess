@@ -1,16 +1,10 @@
 RewriteEngine On
-
-# Block direct access to all PHP files except index.php
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.+)\.php[\s?] [NC]
 RewriteCond %{REQUEST_FILENAME} !index.php$
 RewriteRule ^ - [F]
-
-# Allow assets (CSS, JS, images, etc.)
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteCond %{REQUEST_URI} \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ [NC]
 RewriteRule ^ - [L]
-
-# Route everything else through index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]

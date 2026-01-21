@@ -26,17 +26,20 @@
             </header>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-900 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-600 shadow-lg hover:shadow-xl hover:border-accent/30 dark:hover:border-primary/50 transition-all group">
-                    <div class="size-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">apartment</span>
-                    </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-slate-100">TechCorp Solutions</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-6">Software & Cloud Services</p>
-                    <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider pt-4 border-t-2 border-slate-200 dark:border-slate-700">
-                        <span class="text-slate-600 dark:text-slate-400">12 Active Jobs</span>
-                        <span class="text-success font-black">Partner</span>
-                    </div>
-                </div>
+                {% for c in companies %}
+<div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border-2 shadow-lg">
+    <h3 class="font-bold text-lg">{{ c.name }}</h3>
+    <p class="text-sm text-slate-600 mb-6">{{ c.sector }}</p>
+
+    <div class="flex items-center justify-between text-xs font-bold uppercase pt-4 border-t">
+        <span>{{ c.location }}</span>
+        <a href="/admin/companies/edit?id={{ c.id }}" class="text-primary">Edit</a>
+    </div>
+</div>
+{% else %}
+<p>No companies found.</p>
+{% endfor %}
+
             </div>
         </div>
     </main>
