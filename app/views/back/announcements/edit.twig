@@ -1,0 +1,52 @@
+<h1>Edit announcement #{{ announcement.id }}</h1>
+
+{% set v = old.title is defined ? old : announcement %}
+
+<form method="post" action="/admin/announcements/update?id={{ announcement.id }}">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+
+  <div>
+    <label>Title</label><br>
+    <input type="text" name="title" value="{{ v.title|default('') }}">
+    {% if errors.title %}<div style="color:red;">{{ errors.title }}</div>{% endif %}
+  </div>
+
+  <div>
+    <label>Company</label><br>
+    <select name="company_id">
+      <option value="">-- choose --</option>
+      {% for c in companies %}
+        <option value="{{ c.id }}" {% if v.company_id|default('') == c.id %}selected{% endif %}>
+          {{ c.name }}
+        </option>
+      {% endfor %}
+    </select>
+    {% if errors.company_id %}<div style="color:red;">{{ errors.company_id }}</div>{% endif %}
+  </div>
+
+  <div>
+    <label>Contract type</label><br>
+    <input type="text" name="contract_type" value="{{ v.contract_type|default('') }}">
+    {% if errors.contract_type %}<div style="color:red;">{{ errors.contract_type }}</div>{% endif %}
+  </div>
+
+  <div>
+    <label>Location</label><br>
+    <input type="text" name="location" value="{{ v.location|default('') }}">
+    {% if errors.location %}<div style="color:red;">{{ errors.location }}</div>{% endif %}
+  </div>
+
+  <div>
+    <label>Description</label><br>
+    <textarea name="description" rows="6">{{ v.description|default('') }}</textarea>
+    {% if errors.description %}<div style="color:red;">{{ errors.description }}</div>{% endif %}
+  </div>
+
+  <div>
+    <label>Skills</label><br>
+    <input type="text" name="skills" value="{{ v.skills|default('') }}">
+  </div>
+
+  <button type="submit">Save</button>
+  <a href="/admin/announcements">Back</a>
+</form>

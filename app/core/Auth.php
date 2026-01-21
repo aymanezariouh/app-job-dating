@@ -1,68 +1,86 @@
 <?php
+
 namespace App\core;
 
-use App\core\Security;
-use App\core\Validator;
 use App\models\User;
+
 class Auth
 {
-    private $db;
-    private $errors = [];
+    private array $errors = [];
 
-    public function __construct()
-    {
-        $this->db = Database::getInstance();
-    }
-    public function isLoggedIn()
-    {
-        return Session::get('userId');
-    }
-    public function errors()
-    {
-        return $this->errors;
-    }
     public function login($email, $password)
     {
         $userObj = new User();
         $user = $userObj->findByEmail($email);
-        if(!empty($user) && Security::verify($password, $user['password']))
-        {
-            Session::set('userId',$user['id']);
+
+        if (!empty($user) && Security::verify($password, $user['password'])) {
+            Session::set('userId', (int)$user['id']);
+            Session::set('role', (string)$user['role']);
+            Session::set('last_activity', time());
             return true;
         }
+
         $this->errors[] = "Invalid email or password.";
         return false;
     }
+
     public function logout()
     {
         Session::destroy();
     }
-    public function register($name, $email, $password)
+
+    public function isLoggedIn()
     {
-        $validObj = new Validator(['name'=>$name,'email'=>$email,'password'=>$password]);
-        $validObj->required(['name','email','password'])
-                 ->min('name',3)
-                 ->email('email')
-                 ->min('password',8);
-        
-        if($validObj->fails())
-        {
-            $this->errors = $validObj->errors();
+        $userId = Session::get('userId');
+        if (!$userId) return false;
+
+        $last = (int) Session::get('last_activity', 0);
+        $now = time();
+
+        if ($last > 0 && ($now - $last) > 7200) {
+            $this->logout();
             return false;
         }
-        
-        $userObj = new User();
-        $user = $userObj->findByEmail($email);
-        
-        if($user)
-        {
-            $this->errors['email'] = 'Email already exists';
-            return false;
-        }
-        
-        $hashedPassword = Security::hash($password);
-        $userObj->create(['name'=>$name, 'email'=>$email, 'password'=>$hashedPassword]);
-        
+
+        Session::set('last_activity', $now);
         return true;
+    }
+
+    public function role()
+    {
+        return Session::get('role');
+    }
+
+    public function requireAuth()
+    {
+        if (!$this->isLoggedIn()) {
+            header('Location: /login');
+            exit;
+        }
+    }
+
+    public function requireAdmin()
+    {
+        $this->requireAuth();
+        if ($this->role() !== 'admin') {
+            http_response_code(403);
+            echo "403 Forbidden";
+            exit;
+        }
+    }
+
+    public function requireStudent()
+    {
+        $this->requireAuth();
+        if ($this->role() !== 'student') {
+            http_response_code(403);
+            echo "403 Forbidden";
+            exit;
+        }
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }

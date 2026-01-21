@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements | YouCode Job Dating</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: "#1d4fd7", accent: "#f59e0b", success: "#10b981" }, fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased min-h-screen flex">
+    <!-- Sidebar Container -->
+    <div id="sidebar-container" class="shrink-0 w-72 h-screen sticky top-0"></div>
+
+    <main class="flex-1 h-screen overflow-y-auto p-6 lg:p-10">
+        <div class="max-w-7xl mx-auto space-y-8">
+            <header class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight">Job Announcements</h1>
+                    <p class="text-slate-500 dark:text-slate-400">Manage all your current job listings.</p>
+                </div>
+            </header>
+            
+            <div class="relative max-w-2xl">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
+                    <span class="material-symbols-outlined text-xl">search</span>
+                </div>
+                <input type="text" placeholder="Search announcements..." class="w-full bg-white dark:bg-slate-800 pl-14 pr-6 py-4 text-base rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-primary/50 dark:hover:border-primary/40 focus:border-primary focus:ring-0 outline-none text-slate-900 dark:text-slate-100 transition-colors shadow-lg hover:shadow-xl focus:shadow-primary/20">
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="job-list">
+                {% for a in announcements %}
+<div class="bg-gradient-to-br from-blue-50 via-blue-50 to-blue-100 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-600 shadow-lg hover:shadow-xl hover:border-primary/30 transition-all flex flex-col justify-between group">
+    <div>
+        <div class="flex items-center justify-between mb-4">
+            <span class="px-3 py-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 text-[10px] font-black uppercase rounded-lg">
+                {{ a.contract_type }}
+            </span>
+            <span class="text-xs text-slate-500">
+                {{ a.created_at }}
+            </span>
+        </div>
+
+        <h3 class="text-lg font-bold">{{ a.title }}</h3>
+        <p class="text-sm text-slate-600 mt-1">
+            {{ a.company_name }} • {{ a.location }}
+        </p>
+    </div>
+
+    <div class="mt-6 flex items-center justify-between pt-4 border-t-2 border-slate-200">
+        <a href="/admin/announcements/edit?id={{ a.id }}"
+           class="text-primary text-xs font-bold flex items-center gap-1">
+            Edit <span class="material-symbols-outlined text-sm">edit</span>
+        </a>
+    </div>
+</div>
+{% else %}
+<p>No announcements found.</p>
+{% endfor %}
+            </div>
+        </div>
+    </main>
+    <script src="js/main.js"></script>
+</body>
+</html>

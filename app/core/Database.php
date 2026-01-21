@@ -18,7 +18,12 @@ class Database
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
         ]);
     }
-    
+    public static function pdo(): \PDO
+{
+    return self::getInstance()->getConnection();
+}
+
+
     public static function getInstance()
     {
         if (self::$instance === null) {

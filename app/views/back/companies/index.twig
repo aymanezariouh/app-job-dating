@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companies | YouCode Job Dating</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: "#1d4fd7", accent: "#f59e0b", success: "#10b981" }, fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased min-h-screen flex">
+    <div id="sidebar-container" class="shrink-0 w-72 h-screen sticky top-0"></div>
+    <main class="flex-1 h-screen overflow-y-auto p-6 lg:p-10">
+        <div class="max-w-7xl mx-auto space-y-8">
+            <header class="flex items-center justify-between">
+                <h1 class="text-3xl font-extrabold tracking-tight">Partner Companies</h1>
+                <button class="bg-accent text-white px-5 py-2.5 rounded-xl font-bold text-sm">Add Partner</button>
+            </header>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for c in companies %}
+<div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border-2 shadow-lg">
+    <h3 class="font-bold text-lg">{{ c.name }}</h3>
+    <p class="text-sm text-slate-600 mb-6">{{ c.sector }}</p>
+
+    <div class="flex items-center justify-between text-xs font-bold uppercase pt-4 border-t">
+        <span>{{ c.location }}</span>
+        <a href="/admin/companies/edit?id={{ c.id }}" class="text-primary">Edit</a>
+    </div>
+</div>
+{% else %}
+<p>No companies found.</p>
+{% endfor %}
+
+            </div>
+        </div>
+    </main>
+    <script src="js/main.js"></script>
+</body>
+</html>
