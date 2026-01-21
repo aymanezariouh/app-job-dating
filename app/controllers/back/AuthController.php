@@ -13,7 +13,7 @@ class AuthController extends Controller
         $error = $_SESSION['flash_error'] ?? null;
         unset($_SESSION['flash_error']);
 
-        return $this->render('back/auth/login.twig', [
+        return $this->render('/login.twig', [
             'csrf_token' => $csrf,
             'error' => $error
         ]);
