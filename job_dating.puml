@@ -1,0 +1,61 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class Users
+{
+     - id:Int
+     - name:Varchar
+     - email:Varchar
+     - role:Varchar
+     - created_at:Date
+     - deleted_at:Date
+     + getEmail()
+     + getRole()
+}
+class Annonces
+{
+    - id:Int
+    - entreprise_id:Int
+    - title:Int
+    - description:Varchar
+    - type_contract:Varchar
+    - skills:Varchar
+    + getAllActive()
+    + getArchived()
+    +
+}
+class Entreprises
+{
+    - id:Int
+    - name:Varchar
+    - email:Varchar
+    - imagepath:Varchar
+    - sector:Varchar
+    - location:Varchar
+    - phonenumber:Int
+    - created_at:Varchar
+    - deleted_at:Varchar
+}
+class Apprenants
+{
+    - status:Varchar
+    - specialite:Varchar
+    - promotion:Varchar
+    + set()
+}
+class admin {
+    + ajouter
+    + modifyApprenant()
+    + modifyEntreprise()
+    +
+}
+
+
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+
+@enduml

@@ -22,6 +22,9 @@ $router->post('/admin/announcements', [App\controllers\back\AnnouncementControll
 
 $router->get('/admin/announcements/edit', [App\controllers\back\AnnouncementController::class, 'edit']);
 $router->post('/admin/announcements/update', [App\controllers\back\AnnouncementController::class, 'update']);
+// Define your routes here
+$router->get('/home', [HomeController::class, 'index']);
+
 
 $router->post('/admin/announcements/archive', [App\controllers\back\AnnouncementController::class, 'archive']);
 $router->post('/admin/announcements/restore', [App\controllers\back\AnnouncementController::class, 'restore']);
@@ -31,6 +34,9 @@ $router->post('/admin/companies', [App\controllers\back\CompanyController::class
 
 $router->get('/admin/companies/edit', [App\controllers\back\CompanyController::class, 'edit']);
 $router->post('/admin/companies/update', [App\controllers\back\CompanyController::class, 'update']);
+
+$router->get('/login', [HomeController::class, 'login']);
+$router->post('/login', [HomeController::class, 'loginSubmit']);
 
 $router->post('/admin/companies/delete', [App\controllers\back\CompanyController::class, 'delete']);
 $router->get('/admin/students', [App\controllers\back\StudentController::class, 'index']);
