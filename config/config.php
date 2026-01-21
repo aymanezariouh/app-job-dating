@@ -6,7 +6,7 @@ return [
     'app_env' => 'development',
     
     'db_host' => 'localhost',
-    'db_name' => $_ENV['DB_NAME'] ?? '',
+    'db_name' =>  'job_dating' ?? '',
     'db_user' => 'root',
     'db_pass' => $_ENV['DB_PASS'] ??'',
     
