@@ -134,7 +134,7 @@ function bootstrap() {
     initTheme();
     renderSidebar();
 }
-
+// 
 // Handle multiple ready states to ensure injection
 if (document.readyState === 'complete') {
     bootstrap();
