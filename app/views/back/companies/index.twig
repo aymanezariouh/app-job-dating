@@ -31,9 +31,12 @@
     <h3 class="font-bold text-lg">{{ c.name }}</h3>
     <p class="text-sm text-slate-600 mb-6">{{ c.sector }}</p>
 
-    <div class="flex items-center justify-between text-xs font-bold uppercase pt-4 border-t">
-        <span>{{ c.location }}</span>
-        <a href="/admin/companies/edit?id={{ c.id }}" class="text-primary">Edit</a>
+    <div class="flex items-center justify-end text-xs font-bold uppercase pt-4 border-t">
+        <form method="post" action="/admin/companies/delete" class="inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="id" value="{{ c.id }}">
+            <button type="submit" class="text-red-600 dark:text-red-400 hover:underline" onclick="return confirm('Delete this company?')">Delete</button>
+        </form>
     </div>
 </div>
 {% else %}
@@ -44,5 +47,7 @@
         </div>
     </main>
     <script src="js/main.js"></script>
+  <script src="/assets/js/script.js"></script>
 </body>
 </html>
+

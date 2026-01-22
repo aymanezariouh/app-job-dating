@@ -27,6 +27,18 @@ class Announcement
         $stmt = Database::query("SELECT COUNT(*) AS total FROM announcements WHERE deleted = 0");
         return (int)($stmt->fetch()['total'] ?? 0);
     }
+public function archivedWithCompany(): array
+{
+    $stmt = Database::query(
+        "SELECT a.*, c.name AS company_name
+         FROM announcements a
+         JOIN companies c ON c.id = a.company_id
+         WHERE a.deleted = 1
+         ORDER BY a.updated_at DESC"
+    );
+
+    return $stmt->fetchAll();
+}
 
     public function countArchived(): int
     {

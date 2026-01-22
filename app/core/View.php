@@ -4,8 +4,6 @@ namespace App\core;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class View
 {

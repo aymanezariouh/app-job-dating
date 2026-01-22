@@ -12,13 +12,13 @@ $router->get('/about', function () { return "About page"; });
 
 $router->get('/login', [AuthController::class, 'login']);
 $router->post('/login', [AuthController::class, 'loginSubmit']);
-$router->get('/logout', [AuthController::class, 'logout']);
-
+$router->post('/logout', [App\controllers\back\AuthController::class, 'logout']);
 $router->get('/admin/dashboard', [DashboardController::class, 'index']);
 $router->get('/jobs', [HomeController::class, 'jobs']);
 $router->get('/admin/announcements', [App\controllers\back\AnnouncementController::class, 'index']);
 $router->get('/admin/announcements/create', [App\controllers\back\AnnouncementController::class, 'create']);
 $router->post('/admin/announcements', [App\controllers\back\AnnouncementController::class, 'store']);
+$router->get('/admin/announcements/archived', [App\controllers\back\AnnouncementController::class, 'archived']);
 
 $router->get('/admin/announcements/edit', [App\controllers\back\AnnouncementController::class, 'edit']);
 $router->post('/admin/announcements/update', [App\controllers\back\AnnouncementController::class, 'update']);
@@ -35,8 +35,6 @@ $router->post('/admin/companies', [App\controllers\back\CompanyController::class
 $router->get('/admin/companies/edit', [App\controllers\back\CompanyController::class, 'edit']);
 $router->post('/admin/companies/update', [App\controllers\back\CompanyController::class, 'update']);
 
-$router->get('/login', [HomeController::class, 'login']);
-$router->post('/login', [HomeController::class, 'loginSubmit']);
 
 $router->post('/admin/companies/delete', [App\controllers\back\CompanyController::class, 'delete']);
 $router->get('/admin/students', [App\controllers\back\StudentController::class, 'index']);

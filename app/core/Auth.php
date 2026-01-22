@@ -25,7 +25,7 @@ class Auth
     }
 
     public function logout()
-    {
+    {   
         Session::destroy();
     }
 

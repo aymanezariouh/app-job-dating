@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Partner | YouCode Job Dating</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1d4fd7",
+                        accent: "#f59e0b",
+                        danger: "#ef4444"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen p-6">
+
+    <div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+
+        <h1 class="text-2xl font-extrabold mb-6">Add Partner Company</h1>
+
+        <form method="post" action="/admin/companies">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <!-- Company name -->
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Company name</label>
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ old.name|default('') }}"
+                    class="w-full border rounded-lg px-4 py-2"
+                >
+                {% if errors.name %}
+                    <p class="text-danger text-sm mt-1">{{ errors.name }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Sector -->
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Sector</label>
+                <input
+                    type="text"
+                    name="sector"
+                    value="{{ old.sector|default('') }}"
+                    class="w-full border rounded-lg px-4 py-2"
+                >
+            </div>
+
+            <!-- Location -->
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Location</label>
+                <input
+                    type="text"
+                    name="location"
+                    value="{{ old.location|default('') }}"
+                    class="w-full border rounded-lg px-4 py-2"
+                >
+            </div>
+
+            <!-- Email -->
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ old.email|default('') }}"
+                    class="w-full border rounded-lg px-4 py-2"
+                >
+                {% if errors.email %}
+                    <p class="text-danger text-sm mt-1">{{ errors.email }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Phone</label>
+                <input
+                    type="text"
+                    name="phone"
+                    value="{{ old.phone|default('') }}"
+                    class="w-full border rounded-lg px-4 py-2"
+                >
+            </div>
+
+            <!-- Avatar -->
+            <div class="mb-6">
+                <label class="block font-semibold mb-1">Logo / Avatar (URL)</label>
+                <input
+                    type="text"
+                    name="avatar"
+                    value="{{ old.avatar|default('') }}"
+                    class="w-full border rounded-lg px-4 py-2"
+                >
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-4">
+                <button
+                    type="submit"
+                    class="bg-primary text-white px-6 py-2 rounded-xl font-bold"
+                >
+                    Create Company
+                </button>
+
+                <a href="/admin/companies" class="text-slate-600 font-semibold">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</body>
+</html>

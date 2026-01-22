@@ -1,52 +1,105 @@
-<h1>Edit announcement #{{ announcement.id }}</h1>
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job | YouCode Job Dating</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1d4fd7",
+                        accent: "#f59e0b",
+                        success: "#10b981"
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased min-h-screen flex">
+    
+    <div id="sidebar-container" class="shrink-0 w-72 h-screen sticky top-0"></div>
 
-{% set v = old.title is defined ? old : announcement %}
+    <main class="flex-1 h-screen overflow-y-auto p-6 lg:p-10">
+        <div class="max-w-4xl mx-auto space-y-8">
+            <header class="flex items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight">Edit Job Announcement #{{ announcement.id }}</h1>
+                    <p class="text-slate-500 dark:text-slate-400">Update the job posting details.</p>
+                </div>
+            </header>
 
-<form method="post" action="/admin/announcements/update?id={{ announcement.id }}">
-  <input type="hidden" name="csrf" value="{{ csrf }}">
+            {% set v = old.title is defined ? old : announcement %}
 
-  <div>
-    <label>Title</label><br>
-    <input type="text" name="title" value="{{ v.title|default('') }}">
-    {% if errors.title %}<div style="color:red;">{{ errors.title }}</div>{% endif %}
-  </div>
+            <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <form method="post" action="/admin/announcements/update?id={{ announcement.id }}" class="p-8 space-y-6">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
-  <div>
-    <label>Company</label><br>
-    <select name="company_id">
-      <option value="">-- choose --</option>
-      {% for c in companies %}
-        <option value="{{ c.id }}" {% if v.company_id|default('') == c.id %}selected{% endif %}>
-          {{ c.name }}
-        </option>
-      {% endfor %}
-    </select>
-    {% if errors.company_id %}<div style="color:red;">{{ errors.company_id }}</div>{% endif %}
-  </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Title</label>
+                        <input type="text" name="title" value="{{ v.title|default('') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                        {% if errors.title %}<div class="mt-2 text-sm text-red-600 dark:text-red-400">{{ errors.title }}</div>{% endif %}
+                    </div>
 
-  <div>
-    <label>Contract type</label><br>
-    <input type="text" name="contract_type" value="{{ v.contract_type|default('') }}">
-    {% if errors.contract_type %}<div style="color:red;">{{ errors.contract_type }}</div>{% endif %}
-  </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Company</label>
+                        <select name="company_id" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                            <option value="">-- choose --</option>
+                            {% for c in companies %}
+                            <option value="{{ c.id }}" {% if v.company_id|default('') == c.id %}selected{% endif %}>{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if errors.company_id %}<div class="mt-2 text-sm text-red-600 dark:text-red-400">{{ errors.company_id }}</div>{% endif %}
+                    </div>
 
-  <div>
-    <label>Location</label><br>
-    <input type="text" name="location" value="{{ v.location|default('') }}">
-    {% if errors.location %}<div style="color:red;">{{ errors.location }}</div>{% endif %}
-  </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Contract Type</label>
+                        <input type="text" name="contract_type" value="{{ v.contract_type|default('') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                        {% if errors.contract_type %}<div class="mt-2 text-sm text-red-600 dark:text-red-400">{{ errors.contract_type }}</div>{% endif %}
+                    </div>
 
-  <div>
-    <label>Description</label><br>
-    <textarea name="description" rows="6">{{ v.description|default('') }}</textarea>
-    {% if errors.description %}<div style="color:red;">{{ errors.description }}</div>{% endif %}
-  </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Location</label>
+                        <input type="text" name="location" value="{{ v.location|default('') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                        {% if errors.location %}<div class="mt-2 text-sm text-red-600 dark:text-red-400">{{ errors.location }}</div>{% endif %}
+                    </div>
 
-  <div>
-    <label>Skills</label><br>
-    <input type="text" name="skills" value="{{ v.skills|default('') }}">
-  </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Description</label>
+                        <textarea name="description" rows="6" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none">{{ v.description|default('') }}</textarea>
+                        {% if errors.description %}<div class="mt-2 text-sm text-red-600 dark:text-red-400">{{ errors.description }}</div>{% endif %}
+                    </div>
 
-  <button type="submit">Save</button>
-  <a href="/admin/announcements">Back</a>
-</form>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Skills</label>
+                        <input type="text" name="skills" value="{{ v.skills|default('') }}" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                    </div>
+
+                    <div class="flex items-center gap-4 pt-4">
+                        <button type="submit" class="bg-primary hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 flex items-center gap-2 transition-all active:scale-95">
+                            <span class="material-symbols-outlined">save</span>
+                            Save
+                        </button>
+                        <a href="/admin/announcements" class="px-6 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">Back</a>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>

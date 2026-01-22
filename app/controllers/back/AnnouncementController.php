@@ -112,6 +112,21 @@ class AnnouncementController extends Controller
             'old' => $old
         ]);
     }
+    public function archived()
+{
+    $this->auth->requireAdmin();
+
+    $archived = $this->announcementModel->archivedWithCompany();
+
+    $flash = $_SESSION['flash_success'] ?? null;
+    unset($_SESSION['flash_success']);
+
+    return $this->render('back/archived/index.twig', [
+        'announcements' => $archived,
+        'flash_success' => $flash,
+        'csrf_token' => Security::csrfToken()
+    ]);
+}
 
     public function update()
     {
