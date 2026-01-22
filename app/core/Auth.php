@@ -69,15 +69,13 @@ class Auth
         }
     }
 
-    public function requireStudent()
-    {
-        $this->requireAuth();
-        if ($this->role() !== 'student') {
-            http_response_code(403);
-            echo "403 Forbidden";
-            exit;
-        }
+    public function requireStudent(): void
+{
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
+        header('Location: /login');
+        exit;
     }
+}
 
     public function register($name, $email, $password, $role = 'student')
     {

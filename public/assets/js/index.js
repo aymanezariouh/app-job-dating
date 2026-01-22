@@ -29,7 +29,7 @@ const Navbar = () => {
         </div>
 
         <!-- Student Info -->
-        <div class="flex items-center gap-3 cursor-pointer group">
+        <div class="flex items-center gap-3 group">
           <div class="size-10 rounded-full border-2 border-slate-100 p-0.5 group-hover:border-primary transition-all">
             <img
               alt="User"
@@ -45,6 +45,14 @@ const Navbar = () => {
               ${student.promotion ? `Promo ${student.promotion}` : 'Promo 2024'}
             </p>
           </div>
+          <form method="post" action="/logout">
+            <button
+              type="submit"
+              class="ml-2 text-xs font-bold text-red-600 hover:text-red-700 transition-colors"
+            >
+              Logout
+            </button>
+          </form>
         </div>
 
       </div>

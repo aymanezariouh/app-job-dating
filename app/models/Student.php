@@ -35,6 +35,23 @@ class Student extends User
         return $this->getAllstudents();
     }
 
+    public function getStudentByUserId($userId)
+    {
+        $stmt = Database::query(
+            "SELECT s.id,
+                    s.promotion,
+                    s.specialization,
+                    u.id AS user_id,
+                    u.name,
+                    u.email
+             FROM students s
+             JOIN users u ON u.id = s.user_id
+             WHERE u.id = :user_id",
+            [':user_id' => $userId]
+        );
+        return $stmt->fetch();
+    }
+
     public function getStudent($id)
     {
         $stmt = Database::query(

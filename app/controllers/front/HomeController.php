@@ -10,16 +10,20 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $userId = 5;
+        $this->auth->requireAuth();
+        $this->auth->requireStudent();
 
-        $studentData = null;
-        if ($userId) {
-            $studentModel = new Student();
-            $studentData = $studentModel->getStudent($userId);
+        $userId = $_SESSION['userId'] ?? null;
+        if (!$userId) {
+            header('Location: /login');
+            exit;
         }
 
+        $studentModel = new Student();
+        $studentData = $studentModel->getStudentByUserId((int)$userId);
+
         $announcementModel = new Announcement();
-        $jobs = $announcementModel->allWithCompany();
+        $jobs = $announcementModel->allWithCompany(false);
         $totalJobs = $announcementModel->countActive();
 
         return $this->render('frontend/index.twig', [
@@ -29,16 +33,16 @@ class HomeController extends Controller
         ]);
     }
 
-    public function login()
-    {
-        return $this->render('auth/login', []);
-    }
-
     public function jobs()
     {
         return $this->index();
     }
 
+
+    public function login()
+    {
+        return $this->render('auth/login', []);
+    }   
     public function loginSubmit()
     {
         $email = $_POST['email'] ?? '';
