@@ -65,7 +65,7 @@ VALUES
     1,
     'CDI',
     'Casablanca',
-    'Développement et maintenance des applications web',
+    'D?veloppement et maintenance des applications web',
     'PHP, MySQL, HTML, CSS'
 ),
 (

@@ -6,7 +6,7 @@ use App\models\User;
 
 class Auth
 {
-    private array $errors = [];
+    public array $errors = [];
 
     public function login($email, $password)
     {
@@ -79,7 +79,59 @@ class Auth
         }
     }
 
+    public function register($name, $email, $password, $role = 'student')
+    {
+        $this->errors = [];
+
+        // Validate input
+        $validator = new Validator([
+            'name' => $name,
+            'email' => $email,
+            'password' => $password
+        ]);
+
+        $validator->required(['name', 'email', 'password'])
+                  ->email('email')
+                  ->min('password', 6);
+
+        if ($validator->fails()) {
+            $this->errors = $validator->errors();
+            return false;
+        }
+
+        // Check if email already exists
+        $userObj = new User();
+        $existingUser = $userObj->findByEmail($email);
+
+        if ($existingUser) {
+            $this->errors['email'] = "Email already registered.";
+            return false;
+        }
+
+        // Create user
+        $hashedPassword = Security::hash($password);
+        $userData = [
+            'name' => Security::sanitize($name),
+            'email' => Security::sanitize($email),
+            'password' => $hashedPassword,
+            'role' => $role
+        ];
+
+        try {
+            $userObj->create($userData);
+            return true;
+        } catch (\Exception $e) {
+            $this->errors[] = "Registration failed. Please try again.";
+            return false;
+        }
+    }
+
     public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    public function errors()
     {
         return $this->errors;
     }

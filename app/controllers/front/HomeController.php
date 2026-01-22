@@ -3,20 +3,40 @@
 namespace App\controllers\front;
 
 use App\core\Controller;
-use App\core\View;
+use App\models\Announcement;
+use App\models\Student;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        $userId = 5;
+
+        $studentData = null;
+        if ($userId) {
+            $studentModel = new Student();
+            $studentData = $studentModel->getStudent($userId);
+        }
+
+        $announcementModel = new Announcement();
+        $jobs = $announcementModel->allWithCompany();
+        $totalJobs = $announcementModel->countActive();
+
         return $this->render('frontend/index.twig', [
-            'title' => 'Welcome student'
+            'student' => $studentData,
+            'jobs' => $jobs,
+            'totalJobs' => $totalJobs
         ]);
     }
 
     public function login()
     {
         return $this->render('auth/login', []);
+    }
+
+    public function jobs()
+    {
+        return $this->index();
     }
 
     public function loginSubmit()
@@ -42,12 +62,12 @@ class HomeController extends Controller
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
-        
+
         if ($this->auth->register($name, $email, $password)) {
             header('Location: /login');
             exit;
         }
-        
+
         return $this->render('auth/register', ['errors' => $this->auth->errors()]);
     }
 }
