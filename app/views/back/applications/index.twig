@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applications | YouCode Job Dating</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1d4fd7",
+                        accent: "#f59e0b",
+                        success: "#10b981",
+                        danger: "#ef4444"
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased min-h-screen flex">
+    <div id="sidebar-container" class="shrink-0 w-72 h-screen sticky top-0"></div>
+
+    <main class="flex-1 h-screen overflow-y-auto p-6 lg:p-10">
+        <div class="max-w-7xl mx-auto space-y-8">
+            <header class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-tight">Applications</h1>
+                    <p class="text-slate-500 dark:text-slate-400">Review and decide on student applications.</p>
+                </div>
+            </header>
+
+            <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-100 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th class="px-6 py-4">Student</th>
+                                <th class="px-6 py-4">Email</th>
+                                <th class="px-6 py-4">Job</th>
+                                <th class="px-6 py-4">Company</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                            {% for a in applications %}
+                            <tr>
+                                <td class="px-6 py-4 font-bold text-sm">{{ a.student_name }}</td>
+                                <td class="px-6 py-4 text-sm">{{ a.student_email }}</td>
+                                <td class="px-6 py-4 text-sm">{{ a.job_title }}</td>
+                                <td class="px-6 py-4 text-sm">{{ a.company_name }}</td>
+                                <td class="px-6 py-4">
+                                    {% if a.status == 'accepted' %}
+                                        <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase rounded-lg">Accepted</span>
+                                    {% elseif a.status == 'rejected' %}
+                                        <span class="px-2 py-1 bg-red-100 text-red-700 text-[10px] font-black uppercase rounded-lg">Rejected</span>
+                                    {% else %}
+                                        <span class="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-black uppercase rounded-lg">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <form method="post" action="/admin/applications/approve">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input type="hidden" name="id" value="{{ a.id }}">
+                                            <button type="submit" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50" {% if a.status == 'accepted' %}disabled{% endif %}>
+                                                Approve
+                                            </button>
+                                        </form>
+                                        <form method="post" action="/admin/applications/deny">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input type="hidden" name="id" value="{{ a.id }}">
+                                            <button type="submit" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50" {% if a.status == 'rejected' %}disabled{% endif %}>
+                                                Deny
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="px-6 py-6 text-center text-slate-500">No applications found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>

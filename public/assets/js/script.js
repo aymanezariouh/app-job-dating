@@ -8,6 +8,7 @@ const NAV_ITEMS = [
     { href: '/admin/dashboard', icon: 'dashboard', label: 'Dashboard' },
     { href: '/admin/announcements', icon: 'campaign', label: 'Announcements' },
     { href: '/admin/students', icon: 'group', label: 'Candidates' },
+    { href: '/admin/applications', icon: 'task_alt', label: 'Applications' },
     { href: '/admin/companies', icon: 'corporate_fare', label: 'Companies' },
     { href: '/admin/announcements/archived', icon: 'archive', label: 'Archived' }
 

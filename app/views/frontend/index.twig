@@ -55,6 +55,8 @@
     window.jobsData = {{ jobs|json_encode|raw }};
     window.totalJobs = {{ totalJobs|default(0) }};
     window.studentData = {{ student|json_encode|raw }};
+    window.appliedJobIds = {{ appliedJobIds|json_encode|raw }};
+    window.applicationStatuses = {{ applicationStatuses|json_encode|raw }};
 </script>
 <script src="/assets/js/index.js"></script>
   <script src="/assets/js/script.js"></script>

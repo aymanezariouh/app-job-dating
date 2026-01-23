@@ -12,6 +12,8 @@ $router->get('/about', function () { return "About page"; });
 
 $router->get('/login', [AuthController::class, 'login']);
 $router->post('/login', [AuthController::class, 'loginSubmit']);
+$router->get('/register', [HomeController::class, 'register']);
+$router->post('/register', [HomeController::class, 'registerSubmit']);
 $router->post('/logout', [App\controllers\back\AuthController::class, 'logout']);
 $router->get('/admin/dashboard', [DashboardController::class, 'index']);
 $router->get('/jobs', [HomeController::class, 'jobs']);
@@ -19,10 +21,17 @@ $router->get('/admin/announcements', [App\controllers\back\AnnouncementControlle
 $router->get('/admin/announcements/create', [App\controllers\back\AnnouncementController::class, 'create']);
 $router->post('/admin/announcements', [App\controllers\back\AnnouncementController::class, 'store']);
 $router->get('/admin/announcements/archived', [App\controllers\back\AnnouncementController::class, 'archived']);
+$router->get('/jobs/show', [App\controllers\front\JobController::class, 'show']);
+$router->get('/jobs/apply', [App\controllers\front\JobController::class, 'apply']);
+$router->post('/jobs/apply', [App\controllers\front\JobController::class, 'applySubmit']);
+$router->get('/admin/applications', [App\controllers\back\ApplicationController::class, 'index']);
+$router->post('/admin/applications/approve', [App\controllers\back\ApplicationController::class, 'approve']);
+$router->post('/admin/applications/deny', [App\controllers\back\ApplicationController::class, 'deny']);
 
 $router->get('/admin/announcements/edit', [App\controllers\back\AnnouncementController::class, 'edit']);
 $router->post('/admin/announcements/update', [App\controllers\back\AnnouncementController::class, 'update']);
-// Define your routes here
+// matbadalx les route dyal login ou register 
+
 $router->get('/home', [HomeController::class, 'index']);
 
 
