@@ -1,3 +1,27 @@
+<h1>{{ job.title }}</h1>
+
+<p><strong>Company:</strong> {{ job.company_name }}</p>
+<p><strong>Location:</strong> {{ job.location }}</p>
+<p><strong>Contract:</strong> {{ job.contract_type }}</p>
+
+<hr>
+
+<h3>Description</h3>
+<p>{{ job.description }}</p>
+
+<h3>Skills</h3>
+<p>{{ job.skills }}</p>
+
+{% if session.flash_success is defined %}
+  <p style="color:green">{{ session.flash_success }}</p>
+{% endif %}
+
+{% if session.flash_error is defined %}
+  <p style="color:red">{{ session.flash_error }}</p>
+{% endif %}
+
+<a href="/jobs/apply?id={{ job.id }}">Apply</a>
+<a href="/jobs">Back</a>
 
 
   <script src="/assets/js/script.js"></script>

@@ -27,6 +27,21 @@ class Announcement
         $stmt = Database::query("SELECT COUNT(*) AS total FROM announcements WHERE deleted = 0");
         return (int)($stmt->fetch()['total'] ?? 0);
     }
+    public function findActiveWithCompany(int $id): ?array
+{
+    $stmt = Database::query(
+        "SELECT a.*, c.name AS company_name
+         FROM announcements a
+         JOIN companies c ON c.id = a.company_id
+         WHERE a.id = :id AND a.deleted = 0
+         LIMIT 1",
+        ['id' => $id]
+    );
+
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
 public function archivedWithCompany(): array
 {
     $stmt = Database::query(
@@ -50,7 +65,7 @@ public function archivedWithCompany(): array
     {
         if ($includeArchived) {
             $stmt = Database::query(
-                "SELECT a.*, c.name AS company_name
+                "SELECT a.*, c.name AS company_name, c.avatar AS company_avatar
                  FROM announcements a
                  JOIN companies c ON c.id = a.company_id
                  ORDER BY a.created_at DESC"
@@ -59,7 +74,7 @@ public function archivedWithCompany(): array
         }
 
         $stmt = Database::query(
-            "SELECT a.*, c.name AS company_name
+            "SELECT a.*, c.name AS company_name, c.avatar AS company_avatar
              FROM announcements a
              JOIN companies c ON c.id = a.company_id
              WHERE a.deleted = 0

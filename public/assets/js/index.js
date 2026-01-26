@@ -2,6 +2,8 @@
 const INITIAL_JOBS = window.jobsData || [];
 const TOTAL_JOBS = window.totalJobs || 0;
 const STUDENT_DATA = window.studentData || null;
+const APPLIED_JOB_IDS = new Set((window.appliedJobIds || []).map(String));
+const APPLICATION_STATUSES = window.applicationStatuses || {};
 
 const state = {
   filters: {
@@ -131,14 +133,15 @@ const SearchSection = () => {
 };
 
 const JobCard = (job) => {
-  // Support both database structure and old structure
   const title = job.title || job.job_title || 'Untitled';
   const company = job.company_name || job.company || 'Unknown Company';
   const location = job.location || job.job_location || 'Unknown';
   const type = job.contract_type || job.type || 'Full-time';
   const description = job.description || job.job_description || '';
-  const logoUrl = job.logo_url || job.logoUrl || 'https://picsum.photos/seed/' + company + '/100/100';
-  const postedAt = job.posted_at || job.postedAt || 'Recently';
+  const avatar = job.company_avatar || job.avatar || null;
+  const logoUrl = avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(company) + '&background=3B82F6&color=fff&size=100';
+  const postedAt = job.created_at || job.posted_at || job.postedAt || 'Recently';
+  const jobStatus = job.id != null ? APPLICATION_STATUSES[String(job.id)] : null;
 
   return `
   <div class="bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_10px_30px_-10px_rgba(59,130,246,0.15)] transition-all duration-300 border border-slate-100 p-6 flex flex-col h-full">
@@ -146,9 +149,21 @@ const JobCard = (job) => {
       <div class="size-14 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 overflow-hidden">
         <img alt="${company}" class="w-full h-full object-cover" src="${logoUrl}" />
       </div>
-      <span class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
-        ${type}
-      </span>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
+          ${type}
+        </span>
+        ${jobStatus === 'accepted' ? `
+          <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold uppercase tracking-wider">
+            Hired
+          </span>
+        ` : ''}
+        ${jobStatus === 'rejected' ? `
+          <span class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-700 text-[11px] font-bold uppercase tracking-wider">
+            Rejected
+          </span>
+        ` : ''}
+      </div>
     </div>
     <div class="mb-4">
       <h3 class="font-poppins font-bold text-xl text-slate-900 mb-1 leading-tight">${title}</h3>
@@ -162,7 +177,11 @@ const JobCard = (job) => {
         <span class="material-symbols-outlined text-[18px]">schedule</span>
         <span class="text-xs font-medium">${postedAt}</span>
       </div>
-      <button class="text-primary font-bold text-sm hover:underline flex items-center gap-1 transition-all group">
+      <button
+        class="view-details-btn text-primary font-bold text-sm hover:underline flex items-center gap-1 transition-all group"
+        data-job-id="${job.id || ''}"
+        type="button"
+      >
         View Details
         <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
       </button>
@@ -304,6 +323,37 @@ function render() {
 
       ${Footer()}
     </div>
+    <div id="job-modal" class="fixed inset-0 z-[60] hidden">
+      <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" data-modal-close></div>
+      <div class="relative max-w-2xl mx-auto mt-20 bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Job Details</p>
+            <h3 id="job-modal-title" class="text-2xl font-bold text-slate-900 mt-1"></h3>
+          </div>
+          <button type="button" class="text-slate-400 hover:text-slate-700" data-modal-close>
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="mt-4 space-y-3 text-sm text-slate-600">
+          <p><span class="font-bold text-slate-900">Company:</span> <span id="job-modal-company"></span></p>
+          <p><span class="font-bold text-slate-900">Location:</span> <span id="job-modal-location"></span></p>
+          <p><span class="font-bold text-slate-900">Contract:</span> <span id="job-modal-type"></span></p>
+        </div>
+        <div class="mt-4">
+          <p class="text-sm font-bold text-slate-900 mb-2">Description</p>
+          <p id="job-modal-description" class="text-sm text-slate-600 leading-relaxed"></p>
+        </div>
+        <div class="mt-6 flex items-center justify-end gap-3">
+          <button type="button" class="px-4 py-2 text-sm font-bold text-slate-600 hover:text-slate-900" data-modal-close>
+            Close
+          </button>
+          <a id="job-modal-apply" class="px-5 py-2.5 text-sm font-bold bg-primary text-white rounded-xl shadow-lg shadow-primary/20 hover:bg-blue-600 transition-all" href="#">
+            Apply
+          </a>
+        </div>
+      </div>
+    </div>
   `;
 
   document.getElementById('searchQuery')?.addEventListener('input', (e) => {
@@ -341,6 +391,55 @@ function render() {
     const len = qInput.value.length;
     qInput.setSelectionRange(len, len);
   }
+
+  const modal = document.getElementById('job-modal');
+  const closeModal = () => {
+    if (!modal) return;
+    modal.classList.add('hidden');
+  };
+  const openModal = (job) => {
+    if (!modal || !job) return;
+    document.getElementById('job-modal-title').textContent = job.title || job.job_title || 'Untitled';
+    document.getElementById('job-modal-company').textContent = job.company_name || job.company || 'Unknown Company';
+    document.getElementById('job-modal-location').textContent = job.location || job.job_location || 'Unknown';
+    document.getElementById('job-modal-type').textContent = job.contract_type || job.type || 'Full-time';
+    document.getElementById('job-modal-description').textContent = job.description || job.job_description || '';
+    const applyLink = document.getElementById('job-modal-apply');
+    const isApplied = job?.id != null && APPLIED_JOB_IDS.has(String(job.id));
+    if (isApplied) {
+      applyLink.href = '#';
+      applyLink.dataset.disabled = '1';
+      applyLink.textContent = 'Already applied';
+      applyLink.classList.add('opacity-50', 'cursor-not-allowed');
+      applyLink.classList.remove('hover:bg-blue-600');
+    } else {
+      applyLink.href = `/jobs/apply?id=${job.id || ''}`;
+      applyLink.dataset.disabled = '0';
+      applyLink.textContent = 'Apply';
+      applyLink.classList.remove('opacity-50', 'cursor-not-allowed');
+      applyLink.classList.add('hover:bg-blue-600');
+    }
+    modal.classList.remove('hidden');
+  };
+
+  document.querySelectorAll('[data-modal-close]').forEach((btn) => {
+    btn.addEventListener('click', closeModal);
+  });
+
+  document.querySelectorAll('.view-details-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-job-id');
+      const job = INITIAL_JOBS.find((j) => String(j.id) === String(id));
+      openModal(job);
+    });
+  });
+
+  const applyLink = document.getElementById('job-modal-apply');
+  applyLink?.addEventListener('click', (event) => {
+    if (applyLink.dataset.disabled === '1') {
+      event.preventDefault();
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', render);

@@ -4,7 +4,9 @@ namespace App\controllers\front;
 
 use App\core\Controller;
 use App\models\Announcement;
+use App\models\Application;
 use App\models\Student;
+use App\core\Security;
 
 class HomeController extends Controller
 {
@@ -26,15 +28,22 @@ class HomeController extends Controller
         $jobs = $announcementModel->allWithCompany(false);
         $totalJobs = $announcementModel->countActive();
 
+        $applicationModel = new Application();
+        $appliedJobIds = $studentData ? $applicationModel->jobIdsForStudent((int)$studentData['id']) : [];
+        $applicationStatuses = $studentData ? $applicationModel->statusesForStudent((int)$studentData['id']) : [];
+
         return $this->render('frontend/index.twig', [
             'student' => $studentData,
             'jobs' => $jobs,
-            'totalJobs' => $totalJobs
+            'totalJobs' => $totalJobs,
+            'appliedJobIds' => $appliedJobIds,
+            'applicationStatuses' => $applicationStatuses
         ]);
     }
 
     public function jobs()
     {
+        $this->auth->requireStudent();
         return $this->index();
     }
 
@@ -58,11 +67,21 @@ class HomeController extends Controller
 
     public function register()
     {
-        return $this->render('auth/register', ['errors' => []]);
+        return $this->render('/register.twig', [
+            'errors' => [],
+            'csrf_token' => Security::csrfToken()
+        ]);
     }
 
     public function registerSubmit()
     {
+        $token = (string)($_POST['csrf_token'] ?? '');
+        if (!Security::verifyCsrfToken($token)) {
+            http_response_code(419);
+            echo "CSRF token invalid";
+            exit;
+        }
+
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -72,6 +91,9 @@ class HomeController extends Controller
             exit;
         }
 
-        return $this->render('auth/register', ['errors' => $this->auth->errors()]);
+        return $this->render('/register.twig', [
+            'errors' => $this->auth->errors(),
+            'csrf_token' => Security::csrfToken()
+        ]);
     }
 }

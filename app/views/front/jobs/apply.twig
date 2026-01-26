@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply | {{ job.title }}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#3B82F6",
+            "soft-bg": "#F3F4F6"
+          },
+          fontFamily: {
+            sans: ["Manrope", "sans-serif"],
+            poppins: ["Poppins", "sans-serif"]
+          },
+          borderRadius: { xl: "12px", "2xl": "16px" }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Manrope', sans-serif; }
+  </style>
+</head>
+<body class="bg-soft-bg text-slate-800 min-h-screen">
+  <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="bg-primary size-9 rounded-lg flex items-center justify-center text-white">
+          <span class="material-symbols-outlined">handshake</span>
+        </div>
+        <span class="text-xl font-bold tracking-tight text-slate-900">
+          YouCode<span class="text-primary">.</span>
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/" class="text-sm font-medium text-slate-600 hover:text-slate-900">Jobs</a>
+        <a href="/logout" class="flex items-center gap-2 px-4 py-2 rounded-lg text-red-500 hover:bg-red-50 transition-all font-medium text-sm">
+          <span class="material-symbols-outlined text-[20px]">logout</span>
+          <span class="hidden sm:inline">Logout</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-6 py-12">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Job Application</p>
+        <h1 class="text-3xl md:text-4xl font-bold font-poppins text-slate-900 mt-1">{{ job.title }}</h1>
+        <p class="text-sm text-slate-500 mt-2">
+          {{ job.company_name }} • {{ job.location }} • {{ job.contract_type }}
+        </p>
+      </div>
+      <a href="/" class="text-sm font-bold text-slate-500 hover:text-slate-900">Back</a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 p-6 md:p-8">
+      {% if alreadyApplied %}
+        <div class="rounded-xl border border-red-200 bg-red-50 text-red-700 px-4 py-3 text-sm font-medium">
+          You already applied to this job.
+        </div>
+        <div class="mt-6">
+          <a href="/" class="text-primary font-bold hover:underline">Return to jobs</a>
+        </div>
+      {% else %}
+        <form method="post" action="/jobs/apply?id={{ job.id }}" class="space-y-6">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-2">Message</label>
+            <textarea
+              name="message"
+              rows="7"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 focus:border-primary focus:ring-primary/20"
+              placeholder="Tell the recruiter why you're a great fit..."
+            >{{ old.message|default('') }}</textarea>
+            {% if errors.message %}
+              <p class="mt-2 text-xs font-bold text-red-600">{{ errors.message }}</p>
+            {% endif %}
+          </div>
+
+          <div class="flex items-center justify-end gap-3">
+            <a href="/" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-900">Cancel</a>
+            <button type="submit" class="px-6 py-2.5 text-sm font-bold bg-primary text-white rounded-xl shadow-lg shadow-primary/20 hover:bg-blue-600 transition-all">
+              Send application
+            </button>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </main>
+</body>
+</html>

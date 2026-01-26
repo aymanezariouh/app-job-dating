@@ -63,7 +63,7 @@ class Student extends User
                     u.email
              FROM students s
              JOIN users u ON u.id = s.user_id
-             WHERE s.id = :id",
+             WHERE s.user_id = :id",
             [':id' => $id]
         );
         return $stmt->fetch();
